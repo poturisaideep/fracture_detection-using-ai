@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BoneScan AI | Fracture Detection</title>
+    <meta name="description"
+        content="AI-powered X-ray fracture detection and analysis. Upload your X-ray for immediate screening.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- X-Ray Background Decorations -->
+    <div class="xray-bg-layer">
+        <!-- Scan Line -->
+        <div class="scan-line"></div>
+
+        <!-- Grid overlay -->
+        <div class="grid-overlay"></div>
+
+        <!-- Skeleton Hand (top-right) -->
+        <svg class="bg-skeleton bg-hand" viewBox="0 0 200 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Palm -->
+            <rect x="60" y="160" width="80" height="100" rx="16" stroke="currentColor" stroke-width="1" />
+            <!-- Fingers -->
+            <rect x="65" y="40" width="16" height="130" rx="8" stroke="currentColor" stroke-width="1" />
+            <rect x="88" y="20" width="16" height="150" rx="8" stroke="currentColor" stroke-width="1" />
+            <rect x="111" y="30" width="16" height="140" rx="8" stroke="currentColor" stroke-width="1" />
+            <rect x="134" y="55" width="14" height="115" rx="7" stroke="currentColor" stroke-width="1" />
+            <!-- Thumb -->
+            <rect x="35" y="140" width="14" height="70" rx="7" stroke="currentColor" stroke-width="1"
+                transform="rotate(-20 42 175)" />
+            <!-- Knuckles -->
+            <circle cx="73" cy="165" r="6" stroke="currentColor" stroke-width="0.8" />
+            <circle cx="96" cy="165" r="6" stroke="currentColor" stroke-width="0.8" />
+            <circle cx="119" cy="165" r="6" stroke="currentColor" stroke-width="0.8" />
+            <!-- Wrist bones -->
+            <ellipse cx="85" cy="270" rx="20" ry="10" stroke="currentColor" stroke-width="0.8" />
+            <ellipse cx="115" cy="270" rx="20" ry="10" stroke="currentColor" stroke-width="0.8" />
+            <rect x="72" y="275" width="18" height="45" rx="5" stroke="currentColor" stroke-width="0.8" />
+            <rect x="110" y="275" width="18" height="45" rx="5" stroke="currentColor" stroke-width="0.8" />
+        </svg>
+
+        <!-- Ribcage (left side) -->
+        <svg class="bg-skeleton bg-ribcage" viewBox="0 0 260 350" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Spine -->
+            <rect x="122" y="0" width="16" height="350" rx="8" stroke="currentColor" stroke-width="0.8" />
+            <!-- Vertebrae markings -->
+            <line x1="118" y1="30" x2="142" y2="30" stroke="currentColor" stroke-width="0.5" />
+            <line x1="118" y1="60" x2="142" y2="60" stroke="currentColor" stroke-width="0.5" />
+            <line x1="118" y1="90" x2="142" y2="90" stroke="currentColor" stroke-width="0.5" />
+            <line x1="118" y1="120" x2="142" y2="120" stroke="currentColor" stroke-width="0.5" />
+            <line x1="118" y1="150" x2="142" y2="150" stroke="currentColor" stroke-width="0.5" />
+            <line x1="118" y1="180" x2="142" y2="180" stroke="currentColor" stroke-width="0.5" />
+            <line x1="118" y1="210" x2="142" y2="210" stroke="currentColor" stroke-width="0.5" />
+            <line x1="118" y1="240" x2="142" y2="240" stroke="currentColor" stroke-width="0.5" />
+            <!-- Ribs (left) -->
+            <path d="M122 40 Q60 50 30 90" stroke="currentColor" stroke-width="1" fill="none" />
+            <path d="M122 70 Q55 80 25 120" stroke="currentColor" stroke-width="1" fill="none" />
+            <path d="M122 100 Q50 110 28 145" stroke="currentColor" stroke-width="1" fill="none" />
+            <path d="M122 130 Q55 140 35 168" stroke="currentColor" stroke-width="1" fill="none" />
+            <path d="M122 155 Q65 162 50 185" stroke="currentColor" stroke-width="1" fill="none" />
+            <path d="M122 178 Q75 183 62 200" stroke="currentColor" stroke-width="0.8" fill="none" />
+            <!-- Ribs (right) -->
+            <path d="M138 40 Q200 50 230 90" stroke="currentColor" stroke-width="1" fill="none" />
+            <path d="M138 70 Q205 80 235 120" stroke="currentColor" stroke-width="1" fill="none" />
+            <path d="M138 100 Q210 110 232 145" stroke="currentColor" stroke-width="1" fill="none" />
+            <path d="M138 130 Q205 140 225 168" stroke="currentColor" stroke-width="1" fill="none" />
+            <path d="M138 155 Q195 162 210 185" stroke="currentColor" stroke-width="1" fill="none" />
+            <path d="M138 178 Q185 183 198 200" stroke="currentColor" stroke-width="0.8" fill="none" />
+            <!-- Sternum -->
+            <rect x="125" y="25" width="10" height="120" rx="5" stroke="currentColor" stroke-width="0.6" />
+        </svg>
+
+        <!-- Femur bone (bottom-right) -->
+        <svg class="bg-skeleton bg-femur" viewBox="0 0 80 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Femoral head -->
+            <circle cx="55" cy="25" r="20" stroke="currentColor" stroke-width="1" />
+            <circle cx="55" cy="25" r="10" stroke="currentColor" stroke-width="0.5" />
+            <!-- Neck -->
+            <path d="M45 42 Q38 60 40 80" stroke="currentColor" stroke-width="1" fill="none" />
+            <path d="M60 38 Q50 60 48 80" stroke="currentColor" stroke-width="1" fill="none" />
+            <!-- Shaft -->
+            <rect x="36" y="75" width="18" height="170" rx="9" stroke="currentColor" stroke-width="1" />
+            <!-- Condyles -->
+            <ellipse cx="32" cy="270" rx="22" ry="28" stroke="currentColor" stroke-width="1" />
+            <ellipse cx="58" cy="270" rx="22" ry="28" stroke="currentColor" stroke-width="1" />
+            <!-- Greater trochanter -->
+            <ellipse cx="25" cy="55" rx="14" ry="20" stroke="currentColor" stroke-width="0.8" />
+        </svg>
+
+        <!-- Spine segment (bottom-left) -->
+        <svg class="bg-skeleton bg-spine" viewBox="0 0 100 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Vertebrae -->
+            <rect x="30" y="10" width="40" height="25" rx="6" stroke="currentColor" stroke-width="0.8" />
+            <rect x="30" y="45" width="40" height="25" rx="6" stroke="currentColor" stroke-width="0.8" />
+            <rect x="30" y="80" width="40" height="25" rx="6" stroke="currentColor" stroke-width="0.8" />
+            <rect x="30" y="115" width="40" height="25" rx="6" stroke="currentColor" stroke-width="0.8" />
+            <rect x="30" y="150" width="40" height="25" rx="6" stroke="currentColor" stroke-width="0.8" />
+            <rect x="30" y="185" width="40" height="25" rx="6" stroke="currentColor" stroke-width="0.8" />
+            <rect x="30" y="220" width="40" height="25" rx="6" stroke="currentColor" stroke-width="0.8" />
+            <rect x="30" y="255" width="40" height="25" rx="6" stroke="currentColor" stroke-width="0.8" />
+            <rect x="30" y="290" width="40" height="25" rx="6" stroke="currentColor" stroke-width="0.8" />
+            <rect x="30" y="325" width="40" height="25" rx="6" stroke="currentColor" stroke-width="0.8" />
+            <!-- Spinous processes -->
+            <line x1="50" y1="22" x2="50" y2="42" stroke="currentColor" stroke-width="0.6" />
+            <line x1="50" y1="57" x2="50" y2="77" stroke="currentColor" stroke-width="0.6" />
+            <line x1="50" y1="92" x2="50" y2="112" stroke="currentColor" stroke-width="0.6" />
+            <line x1="50" y1="127" x2="50" y2="147" stroke="currentColor" stroke-width="0.6" />
+            <line x1="50" y1="162" x2="50" y2="182" stroke="currentColor" stroke-width="0.6" />
+            <line x1="50" y1="197" x2="50" y2="217" stroke="currentColor" stroke-width="0.6" />
+            <line x1="50" y1="232" x2="50" y2="252" stroke="currentColor" stroke-width="0.6" />
+            <line x1="50" y1="267" x2="50" y2="287" stroke="currentColor" stroke-width="0.6" />
+            <line x1="50" y1="302" x2="50" y2="322" stroke="currentColor" stroke-width="0.6" />
+            <!-- Transverse processes -->
+            <line x1="30" y1="22" x2="10" y2="18" stroke="currentColor" stroke-width="0.6" />
+            <line x1="70" y1="22" x2="90" y2="18" stroke="currentColor" stroke-width="0.6" />
+            <line x1="30" y1="57" x2="10" y2="53" stroke="currentColor" stroke-width="0.6" />
+            <line x1="70" y1="57" x2="90" y2="53" stroke="currentColor" stroke-width="0.6" />
+            <line x1="30" y1="92" x2="10" y2="88" stroke="currentColor" stroke-width="0.6" />
+            <line x1="70" y1="92" x2="90" y2="88" stroke="currentColor" stroke-width="0.6" />
+            <line x1="30" y1="127" x2="10" y2="123" stroke="currentColor" stroke-width="0.6" />
+            <line x1="70" y1="127" x2="90" y2="123" stroke="currentColor" stroke-width="0.6" />
+            <line x1="30" y1="162" x2="10" y2="158" stroke="currentColor" stroke-width="0.6" />
+            <line x1="70" y1="162" x2="90" y2="158" stroke="currentColor" stroke-width="0.6" />
+        </svg>
+
+        <!-- Floating bone particles -->
+        <div class="bone-particle p1"></div>
+        <div class="bone-particle p2"></div>
+        <div class="bone-particle p3"></div>
+        <div class="bone-particle p4"></div>
+        <div class="bone-particle p5"></div>
+        <div class="bone-particle p6"></div>
+        <div class="bone-particle p7"></div>
+        <div class="bone-particle p8"></div>
+
+        <!-- EKG / Heartbeat line -->
+        <svg class="bg-ekg" viewBox="0 0 1200 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="ekg-path"
+                d="M0 40 L200 40 L220 40 L230 15 L240 65 L250 10 L260 55 L270 40 L400 40 L420 40 L430 15 L440 65 L450 10 L460 55 L470 40 L600 40 L620 40 L630 15 L640 65 L650 10 L660 55 L670 40 L800 40 L820 40 L830 15 L840 65 L850 10 L860 55 L870 40 L1000 40 L1020 40 L1030 15 L1040 65 L1050 10 L1060 55 L1070 40 L1200 40"
+                stroke="url(#ekgGrad)" stroke-width="1.5" fill="none" />
+            <defs>
+                <linearGradient id="ekgGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#00d4ff" stop-opacity="0" />
+                    <stop offset="30%" stop-color="#00d4ff" stop-opacity="0.4" />
+                    <stop offset="50%" stop-color="#00e5a0" stop-opacity="0.6" />
+                    <stop offset="70%" stop-color="#00d4ff" stop-opacity="0.4" />
+                    <stop offset="100%" stop-color="#00d4ff" stop-opacity="0" />
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <!-- Crosshair / targeting reticle -->
+        <svg class="bg-crosshair" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="60" cy="60" r="50" stroke="currentColor" stroke-width="0.8" stroke-dasharray="8 4" />
+            <circle cx="60" cy="60" r="35" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 6" />
+            <circle cx="60" cy="60" r="18" stroke="currentColor" stroke-width="0.6" />
+            <line x1="60" y1="5" x2="60" y2="38" stroke="currentColor" stroke-width="0.6" />
+            <line x1="60" y1="82" x2="60" y2="115" stroke="currentColor" stroke-width="0.6" />
+            <line x1="5" y1="60" x2="38" y2="60" stroke="currentColor" stroke-width="0.6" />
+            <line x1="82" y1="60" x2="115" y2="60" stroke="currentColor" stroke-width="0.6" />
+            <!-- Corner brackets -->
+            <path d="M15 30 L15 15 L30 15" stroke="currentColor" stroke-width="0.8" fill="none" />
+            <path d="M90 15 L105 15 L105 30" stroke="currentColor" stroke-width="0.8" fill="none" />
+            <path d="M105 90 L105 105 L90 105" stroke="currentColor" stroke-width="0.8" fill="none" />
+            <path d="M30 105 L15 105 L15 90" stroke="currentColor" stroke-width="0.8" fill="none" />
+        </svg>
+
+        <!-- Small joint / knee (top-left) -->
+        <svg class="bg-skeleton bg-joint" viewBox="0 0 120 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="60" cy="45" rx="35" ry="40" stroke="currentColor" stroke-width="0.8" />
+            <ellipse cx="45" cy="45" rx="18" ry="22" stroke="currentColor" stroke-width="0.5" />
+            <ellipse cx="75" cy="45" rx="18" ry="22" stroke="currentColor" stroke-width="0.5" />
+            <rect x="42" y="85" width="16" height="90" rx="8" stroke="currentColor" stroke-width="0.8" />
+            <rect x="62" y="85" width="16" height="90" rx="8" stroke="currentColor" stroke-width="0.8" />
+            <!-- Patella -->
+            <ellipse cx="60" cy="80" rx="15" ry="12" stroke="currentColor" stroke-width="0.6" />
+        </svg>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-brand">
+            <svg class="nav-logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="14" stroke="url(#logoGrad)" stroke-width="2.5" fill="none" />
+                <path d="M16 8 L16 24 M12 10 Q16 6 20 10 M12 22 Q16 26 20 22 M13 14 L19 14 M13 18 L19 18"
+                    stroke="url(#logoGrad)" stroke-width="1.8" stroke-linecap="round" />
+                <defs>
+                    <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32">
+                        <stop offset="0%" stop-color="#00d4ff" />
+                        <stop offset="100%" stop-color="#00e5a0" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span class="brand-text">BoneScan <span class="brand-accent">AI</span></span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="nav-link">Home</a></li>
+            <li><a href="#" class="nav-link active">Scan</a></li>
+            <li><a href="#" class="nav-link">History</a></li>
+            <li><a href="#" class="nav-link">Learn</a></li>
+        </ul>
+        <div class="nav-actions">
+            <div class="nav-avatar" title="User Profile">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="8" r="4" fill="#8892a4" />
+                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="#8892a4" />
+                </svg>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Upload Section -->
+        <section class="upload-section" id="upload-section">
+            <div class="section-header">
+                <h1>X-Ray Analysis</h1>
+                <p class="section-subtitle">Upload an X-ray for AI-powered fracture screening</p>
+            </div>
+            <div class="upload-zone" id="drop-zone">
+                <input type="file" id="file-input" accept="image/*" hidden>
+                <div class="upload-icon">
+                    <svg viewBox="0 0 64 64" fill="none">
+                        <path d="M32 44V20M32 20L22 30M32 20L42 30" stroke="url(#uploadGrad)" stroke-width="3"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M12 38V46C12 49.3 14.7 52 18 52H46C49.3 52 52 49.3 52 46V38" stroke="url(#uploadGrad)"
+                            stroke-width="3" stroke-linecap="round" />
+                        <defs>
+                            <linearGradient id="uploadGrad" x1="12" y1="20" x2="52" y2="52">
+                                <stop offset="0%" stop-color="#00d4ff" />
+                                <stop offset="100%" stop-color="#00e5a0" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h2 class="upload-title">Drop your X-ray image here</h2>
+                <p class="upload-subtitle">or click to browse files</p>
+                <p class="upload-formats">Supports JPEG, PNG, DICOM</p>
+                <label for="file-input" class="upload-btn" id="upload-btn">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                        <path
+                            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                    </svg>
+                    Choose X-Ray Image
+                </label>
+                <p class="file-name" id="file-name"></p>
+            </div>
+        </section>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay hidden" id="loading-overlay">
+            <div class="scanner-animation">
+                <div class="scanner-ring"></div>
+                <div class="scanner-ring ring-2"></div>
+                <div class="scanner-ring ring-3"></div>
+                <svg class="scanner-icon" viewBox="0 0 40 40" fill="none">
+                    <path d="M20 8V32M14 12Q20 6 26 12M14 28Q20 34 26 28M15 18H25M15 22H25" stroke="#00d4ff"
+                        stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </div>
+            <p class="loading-text">Analyzing X-Ray<span class="loading-dots"></span></p>
+            <p class="loading-sub">AI model processing bone structure</p>
+        </div>
+
+        <!-- Results Section -->
+        <section class="results-section hidden" id="results-section">
+            <div class="results-grid">
+                <!-- Left Panel: X-Ray Preview -->
+                <div class="glass-card xray-panel">
+                    <div class="card-header">
+                        <svg viewBox="0 0 20 20" fill="#00d4ff" width="20" height="20">
+                            <path
+                                d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" />
+                        </svg>
+                        <h3>X-Ray Analysis & Annotation</h3>
+                    </div>
+                    <div class="xray-viewer" id="xray-viewer">
+                        <img id="image-preview" src="" alt="X-ray Preview">
+                        <div class="detection-box hidden" id="detection-box">
+                            <span class="detection-label" id="detection-label">Fracture Detected</span>
+                        </div>
+                        <div class="annotation-tag hidden" id="annotation-tag">
+                            <span class="annotation-dot"></span>
+                            <span id="annotation-text">Displaced Transverse Fracture</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel: Analysis Results -->
+                <div class="glass-card analysis-panel">
+                    <div class="card-header">
+                        <svg viewBox="0 0 20 20" fill="#00d4ff" width="20" height="20">
+                            <path fill-rule="evenodd"
+                                d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <h3>Analysis Results</h3>
+                    </div>
+
+                    <div class="results-content">
+                        <!-- Confidence Gauge -->
+                        <div class="gauge-section">
+                            <div class="confidence-gauge" id="confidence-gauge">
+                                <svg viewBox="0 0 120 120" class="gauge-svg">
+                                    <circle cx="60" cy="60" r="52" class="gauge-bg" />
+                                    <circle cx="60" cy="60" r="52" class="gauge-fill" id="gauge-fill"
+                                        stroke-dasharray="326.73" stroke-dashoffset="326.73" />
+                                </svg>
+                                <div class="gauge-value">
+                                    <span class="gauge-number" id="gauge-number">0</span>
+                                    <span class="gauge-percent">%</span>
+                                </div>
+                                <p class="gauge-label">Confidence Score</p>
+                            </div>
+
+                            <div class="diagnosis-info">
+                                <div class="diagnosis-badge" id="diagnosis-badge">
+                                    <span class="badge-dot"></span>
+                                    <span id="diagnosis-text">Fracture Detected</span>
+                                </div>
+                                <p class="diagnosis-detail" id="diagnosis-detail">AI analysis confirmed a break in the
+                                    distal radius bone.</p>
+                            </div>
+                        </div>
+
+                        <!-- Severity -->
+                        <div class="severity-section">
+                            <h4>Severity</h4>
+                            <div class="severity-bar-container">
+                                <div class="severity-bar">
+                                    <div class="severity-fill" id="severity-fill"></div>
+                                    <div class="severity-marker" id="severity-marker"></div>
+                                </div>
+                                <div class="severity-labels">
+                                    <span>Mild</span>
+                                    <span>Moderate</span>
+                                    <span>Severe</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Affected Area -->
+                        <div class="affected-area">
+                            <h4>Affected Area</h4>
+                            <p class="area-value" id="area-value">Distal Radius, Left Forearm</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommended Actions -->
+            <div class="recommendations">
+                <h3 class="rec-title">Recommended Actions</h3>
+                <div class="rec-cards">
+                    <div class="glass-card rec-card">
+                        <div class="rec-icon rec-icon-ice">
+                            <svg viewBox="0 0 32 32" fill="none">
+                                <path d="M16 4V28M8 8L24 24M24 8L8 24M4 16H28" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" />
+                                <circle cx="16" cy="16" r="3" fill="currentColor" opacity="0.3" />
+                            </svg>
+                        </div>
+                        <h4>Immediate Pain Relief</h4>
+                        <p>Apply Ice Pack: Reduce swelling and manage pain. Apply for 20 minutes every hour.</p>
+                    </div>
+                    <div class="glass-card rec-card">
+                        <div class="rec-icon rec-icon-stabilize">
+                            <svg viewBox="0 0 32 32" fill="none">
+                                <rect x="8" y="4" width="16" height="24" rx="3" stroke="currentColor"
+                                    stroke-width="2" />
+                                <path d="M12 10H20M12 14H20M12 18H20M12 22H20" stroke="currentColor" stroke-width="1.5"
+                                    stroke-linecap="round" opacity="0.5" />
+                                <path d="M14 4V2M18 4V2M14 28V30M18 28V30" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <h4>Stabilization</h4>
+                        <p>Immobilize: Keep the arm stable to prevent further injury. Do not attempt to move the bone.
+                        </p>
+                    </div>
+                    <div class="glass-card rec-card">
+                        <div class="rec-icon rec-icon-doctor">
+                            <svg viewBox="0 0 32 32" fill="none">
+                                <circle cx="16" cy="10" r="5" stroke="currentColor" stroke-width="2" />
+                                <path d="M6 28c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" />
+                                <path d="M16 7V13M13 10H19" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <h4>Professional Care</h4>
+                        <p>Consult Doctor: Seek immediate medical attention for professional assessment and treatment
+                            plan.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Stats Bar -->
+    <footer class="stats-bar" id="stats-bar">
+        <div class="stat-item">
+            <svg viewBox="0 0 20 20" fill="#00d4ff" width="16" height="16">
+                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                <path fill-rule="evenodd"
+                    d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
+                    clip-rule="evenodd" />
+            </svg>
+            <span>Scans Today: <strong id="stat-scans">12</strong></span>
+            <span class="stat-trend up">↑ 2</span>
+        </div>
+        <div class="stat-item">
+            <svg viewBox="0 0 20 20" fill="#00e5a0" width="16" height="16">
+                <path fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd" />
+            </svg>
+            <span>Detection Accuracy: <strong id="stat-accuracy">96.8%</strong></span>
+        </div>
+        <div class="stat-item">
+            <svg viewBox="0 0 20 20" fill="#a78bfa" width="16" height="16">
+                <path fill-rule="evenodd"
+                    d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                    clip-rule="evenodd" />
+            </svg>
+            <span>Avg Processing: <strong id="stat-speed">1.2s</strong></span>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
